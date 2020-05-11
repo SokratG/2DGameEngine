@@ -14,6 +14,7 @@ namespace GameEngine {
 	{
 		input = new Input;
 		audio = nullptr;
+		textdraw = nullptr;
 		result = FALSE;
 		paused = FALSE;
 		graphicDriver = nullptr;
@@ -31,6 +32,7 @@ namespace GameEngine {
 			graphicDriver->initialize(wnd, WINDOW_WIDTH, WINDOW_HEIGHT, FULLSCREENMODE);
 			input->initialize(*wnd->getHWND(), FALSE); // init input, and don't capture mouse
 			audio = Audio::CreateAudioControl();
+			textdraw = new Text;
 		}
 		catch (CoreError::GameEngineError& ge) {
 			throw ge;
@@ -57,6 +59,15 @@ namespace GameEngine {
 				else
 					throw CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error failed to initialize sound system");
 			}
+		}
+	}
+
+	VOID Game2D::initTextDraw(LPCWSTR filename, FontParameters& fp)
+	{
+		if (filename) {
+			BOOL res = textdraw->initialize(graphicDriver, filename, fp);
+			if (res == FALSE)
+				throw CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error failed to initialize text draw system");
 		}
 	}
 
@@ -200,11 +211,13 @@ namespace GameEngine {
 	{
 		for (auto& texture : TextureTable)
 			texture.second->onLostDevice();
+		textdraw->onLostDevice();
 	}
 	VOID Game2D::resetAll()
 	{
 		for (auto& texture : TextureTable)
 			texture.second->onResetDevice();
+		textdraw->onResetDevice();
 	}
 	VOID Game2D::deleteAll()
 	{
@@ -216,6 +229,7 @@ namespace GameEngine {
 			SAFE_DELETE(audio);
 			SAFE_DELETE(graphicDriver);
 			SAFE_DELETE(wnd);
+			SAFE_DELETE(textdraw);
 		}
 		initialized = FALSE;
 	}

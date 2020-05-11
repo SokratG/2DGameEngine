@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+SpaceWar/
+2DGameEngine/.vs/
+2DGameEngine/bin/
+2DGameEngine/bin-int/
+2DGameEngine/*.*.user

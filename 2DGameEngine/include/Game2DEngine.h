@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "Audio.h"
 #include "Entity.h"
+#include "Text.h"
 
 using table = std::unordered_map<string, GameEngine::TextureManager*>;
 
@@ -18,6 +19,7 @@ namespace GameEngine {
 		DirectGraphic* graphicDriver;
 		Input* input;
 		Audio* audio;
+		Text* textdraw;
 		HRESULT result;
 		LARGE_INTEGER timeStart;	// Perfomance counter start
 		LARGE_INTEGER timeEnd;		// Perfomance counter end
@@ -40,17 +42,17 @@ namespace GameEngine {
 								const INT32 WINDOW_WIDTH = GAME_WIDTH, const INT32 WINDOW_HEIGHT = GAME_HEIGHT,
 								BOOL FULLSCREENMODE = FALSE); // init game	
 		virtual VOID initAudio(LPCWSTR WAVE_BANK_SOURCE, LPCWSTR SOUND_BANK_SOURCE);
+		virtual VOID initTextDraw(LPCWSTR filename, FontParameters& fp);
 		virtual VOID run(); // run game in main message loop
 		virtual VOID releaseAll(); // release all resource
 		virtual VOID resetAll(); // recreate all entities
 		virtual VOID deleteAll(); // delete all reserved memory
 		virtual VOID renderGame(); // render game object
 		virtual VOID handleLostGraphicDevice() noexcept;
-		DirectGraphic* getGraphicDriver() noexcept {
-			return graphicDriver;
-		};
+		DirectGraphic* getGraphicDriver() noexcept {return graphicDriver;};
 		Input* getInput() noexcept { return input; }
 		Audio* getAudio() noexcept { return audio; }
+		Text* getTextDraw() noexcept { return textdraw; }
 		VOID exitGame();
 		VOID addTexture(LPCSTR TEXTURE_NAME, LPCWSTR TEXTURE_PATH);
 		VOID setDisplayMode(GraphColor::DISPLAY_MODE mode = GraphColor::TOGGLE); // Set display mode (fullscreen, window or toggle)

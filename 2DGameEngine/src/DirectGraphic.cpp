@@ -82,6 +82,10 @@ namespace GameEngine {
 		if (FAILED(result))
 			throw(CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error creating Direct3D sprite"));
 
+		// Configure for alpha blend of primitives
+		device3d->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		device3d->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		device3d->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	}
 
 #pragma warning(push)
@@ -195,6 +199,50 @@ namespace GameEngine {
 	}
 
 
+	HRESULT DirectGraphic::loadTextureSystemMem(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture)
+	{
+		D3DXIMAGE_INFO info; // struct for read image file info
+		result = E_FAIL;
+
+		try
+		{
+			if (filename == nullptr) {
+				texture = nullptr;
+				return D3DERR_INVALIDCALL;
+			}
+			result = D3DXGetImageInfoFromFile(filename, &info);
+			if (result != D3D_OK)
+				return result;
+			width = info.Width;
+			height = info.Height;
+
+			// create a new texture from loading file and allocate them in system memory
+			result = D3DXCreateTextureFromFileEx(
+				device3d,
+				filename,
+				info.Width,
+				info.Height,
+				1,				// Mipmap levels(1 - no chains)
+				0,				// Usage (0 - no usage)
+				D3DFMT_UNKNOWN, // Sufrace forma(default)
+				D3DPOOL_SYSTEMMEM, // memory pool class for the texture
+				D3DX_DEFAULT,   // image filter
+				D3DX_DEFAULT,   // mipmap filter
+				transcolor,		// color key for transparency
+				&info,			// file info(from loaded file)
+				nullptr,		// pointer to color palette
+				&texture		// save destination texture
+			);
+
+		}
+		catch (...)
+		{
+			throw CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error in loaded texture");
+		}
+
+		return result;
+	}
+
 	VOID DirectGraphic::drawSprite(const SpriteData& spritedata, COLOR_ARGB color) { 
 
 		if(!spritedata.texture)
@@ -293,6 +341,15 @@ namespace GameEngine {
 		sprite->End();
 	}
 
+	LP_3D DirectGraphic::get3DDirect() noexcept
+	{
+		return direct3d;
+	}
+
+	LP_3DDEVICE DirectGraphic::get3DDevice() noexcept
+	{
+		return device3d;
+	}
 
 	VOID DirectGraphic::setBackColor(D3DCOLOR _color) noexcept
 	{
@@ -345,6 +402,9 @@ namespace GameEngine {
 		D3DXVec2Normalize(_V, _V);
 	}
 
+	inline VECTOR2* Vector2Transform(VECTOR2* v, D3DXMATRIX* m){
+		return D3DXVec2TransformCoord(v, v, m); 
+	}
 
 };
 

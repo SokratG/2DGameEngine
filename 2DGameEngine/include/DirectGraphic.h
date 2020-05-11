@@ -61,6 +61,13 @@ namespace GraphColor {
 }
 
 
+struct VertexC              // Vertex with Color
+{
+	FLOAT x, y, z;          // vertex location
+	FLOAT rhw;              // reciprocal homogeneous W (set to 1)
+	ULONG color;    // vertex color
+};
+
 namespace GameEngine {
 
 	class DirectGraphic
@@ -98,7 +105,13 @@ namespace GameEngine {
 		HRESULT beginScene() noexcept;
 		HRESULT endScene() noexcept;
 		BOOL getFullScreen() const;
+		LP_3D get3DDirect() noexcept;
+		LP_3DDEVICE get3DDevice() noexcept;
+
 		HRESULT loadTexture(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load texture from resource file
+		HRESULT loadTextureSystemMem(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load the texture into system memory(system memory is lockable)
+		//HRESULT createVertexBuffer(VertexC verts[], UINT size, LP_VERTEXBUFFER& vertexBuffer);
+		//BOOL drawQuad(LP_VERTEXBUFFER vertexBuffer);
 		VOID spriteBeginScene();	// sprite begin to draw in scene
 		VOID spriteEndScene();		// sprite end to draw in scene
 		VOID drawSprite(const SpriteData& spritedata, COLOR_ARGB color);
@@ -111,5 +124,7 @@ namespace GameEngine {
 	FLOAT Vector2Length(const VECTOR2* _V);
 	FLOAT Vector2Dot(const VECTOR2* _V1, const VECTOR2* _V2);
 	VOID Vector2Normalize(VECTOR2* _V);
+	// Transform vector v with matrix m.
+	VECTOR2* Vector2Transform(VECTOR2* v, D3DXMATRIX* m);
 };
 #endif /* D3D9 */
