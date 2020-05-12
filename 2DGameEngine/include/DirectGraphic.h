@@ -17,6 +17,8 @@
 #define VECTOR2 D3DXVECTOR2
 #define VECTOR3 D3DXVECTOR3
 #define MATRIX4 D3DXMATRIX
+#define LP_VERTEXBUFFER LPDIRECT3DVERTEXBUFFER9
+#define LP_DXFONT LPD3DXFONT
 #define SETCOLOR_ARGB(A,R,G,B) ((COLOR_ARGB) ( ( ( A & 0xFF) << 24) | ( ( R & 0xFF) << 16 ) | ( ( G & 0xFF) << 8) | ( B & 0xFF) ) )
 #define COLOR24BIT _D3DFORMAT::D3DFMT_X8R8G8B8	
 #define D3D_RGB(R,G,B) D3DCOLOR_XRGB(R, G, B)
@@ -107,7 +109,7 @@ namespace GameEngine {
 		BOOL getFullScreen() const;
 		LP_3D get3DDirect() noexcept;
 		LP_3DDEVICE get3DDevice() noexcept;
-
+		LP_SPRITE getSprite() noexcept;
 		HRESULT loadTexture(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load texture from resource file
 		HRESULT loadTextureSystemMem(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load the texture into system memory(system memory is lockable)
 		//HRESULT createVertexBuffer(VertexC verts[], UINT size, LP_VERTEXBUFFER& vertexBuffer);

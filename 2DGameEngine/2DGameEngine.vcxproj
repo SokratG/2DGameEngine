@@ -99,6 +99,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Audio.cpp" />
+    <ClCompile Include="src\DirectText.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Game2DEngine.cpp" />
     <ClCompile Include="src\DirectGraphic.cpp" />
@@ -112,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h" />
+    <ClInclude Include="include\DirectText.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Game2DEngine.h" />
     <ClInclude Include="include\console.h" />

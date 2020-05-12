@@ -351,6 +351,11 @@ namespace GameEngine {
 		return device3d;
 	}
 
+	LP_SPRITE DirectGraphic::getSprite() noexcept
+	{
+		return sprite;
+	}
+
 	VOID DirectGraphic::setBackColor(D3DCOLOR _color) noexcept
 	{
 		this->backgroundColor = _color;

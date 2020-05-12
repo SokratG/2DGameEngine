@@ -37,7 +37,7 @@ namespace GameEngine {
 		const CHAR UNDERLINE = '_';
 		CHAR SOLID;        // solid block used for fill character ASCII $7F
 		INT32 BOLD_SIZE;        // pixel shift for bold display
-		FontParameters() : GRID_WIDTH(0), GRID_HEIGHT(0), SOLID(0x7F) {}
+		FontParameters() : GRID_WIDTH(0), GRID_HEIGHT(0){}
 		FontParameters(const FontParameters& fp);
 		FontParameters& operator=(const FontParameters& fp);
 		static FontParameters initFontParameters(INT32 FONT_BORDER, INT32 FONT_WIDTH, INT32 FONT_HEIGHT, INT32 COLUMNS, INT32 ROWS,

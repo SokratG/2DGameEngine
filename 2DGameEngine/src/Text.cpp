@@ -389,24 +389,24 @@ namespace GameEngine {
 					spriteData.x += scaledWidth;
 					break;
 				 case '\n':                            // newline
-					 spriteData.x = (float)x;
-					 spriteData.y += static_cast<int>(height * spriteData.scale);
+					 spriteData.x = static_cast<FLOAT>(x);
+					 spriteData.y += static_cast<INT32>(height * spriteData.scale);
 					 _Y = spriteData.y;
 					 strtemp = str.substr(i, str.length());
 					 doAlign(strtemp);
 					 spriteData.y = _Y;
 					 break;
 				 case '\r':                            // return to starting x position
-					 spriteData.x = (float)x;
+					 spriteData.x = static_cast<FLOAT>(x);
 					 strtemp = str.substr(i, str.length());
 					 doAlign(strtemp);
 					 break;
 				 case '\t':                            // tab
 					 width = fontParams.FONT_WIDTH;
-					 scaledWidth = static_cast<int>(width * spriteData.scale);
-					 tabX = static_cast<int>(spriteData.x) / (scaledWidth * tabSize);
+					 scaledWidth = static_cast<INT32>(width * spriteData.scale);
+					 tabX = static_cast<INT32>(spriteData.x) / (scaledWidth * tabSize);
 					 tabX = (tabX + 1) * scaledWidth * tabSize;
-					 tabW = tabX - static_cast<int>(spriteData.x);
+					 tabW = tabX - static_cast<INT32>(spriteData.x);
 					 while (tabW > 0)
 					 {
 						 if (tabW >= scaledWidth)
@@ -429,7 +429,7 @@ namespace GameEngine {
 						 spriteData.x = 0;
 					 break;
 				 case '\v':                            // vertical tab
-					 spriteData.y += static_cast<int>(height * spriteData.scale);
+					 spriteData.y += static_cast<INT32>(height * spriteData.scale);
 					 break;
 				 case 0x01:                            // font signature character ?
 					 spriteData.objrect.top = 1;

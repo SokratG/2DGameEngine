@@ -6,9 +6,10 @@
 #include "Audio.h"
 #include "Entity.h"
 #include "Text.h"
+#include "DirectText.h"
 
-using table = std::unordered_map<string, GameEngine::TextureManager*>;
-
+using TexturesTable = std::unordered_map<string, GameEngine::TextureManager*>;
+using DXTextTable = std::unordered_map<string, GameEngine::DirectText>;
 namespace GameEngine {
 
 
@@ -29,7 +30,8 @@ namespace GameEngine {
 		DWORD sleepTime;			// ms to sleep between frames
 		BOOL paused;				// game pause
 		BOOL initialized;			// game is init
-		table TextureTable;			// texture table
+		TexturesTable TextureTable;			// texture table
+		DXTextTable   DXTTable;
 		static Game2D* currentGame;
 		friend LRESULT WinProcWrapper(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	public:
@@ -55,6 +57,7 @@ namespace GameEngine {
 		Text* getTextDraw() noexcept { return textdraw; }
 		VOID exitGame();
 		VOID addTexture(LPCSTR TEXTURE_NAME, LPCWSTR TEXTURE_PATH);
+		VOID addDirectTextFont(const string& TextName, INT32 FontHeight, BOOL bold, BOOL italic, LPCSTR FontName);
 		VOID setDisplayMode(GraphColor::DISPLAY_MODE mode = GraphColor::TOGGLE); // Set display mode (fullscreen, window or toggle)
 		virtual VOID setCurrentGame(Game2D* _pGame) final;
 		virtual VOID update() = 0; // update entites

@@ -211,12 +211,16 @@ namespace GameEngine {
 	{
 		for (auto& texture : TextureTable)
 			texture.second->onLostDevice();
+		for (auto& text : DXTTable)
+			text.second.onLostDevice();
 		textdraw->onLostDevice();
 	}
 	VOID Game2D::resetAll()
 	{
 		for (auto& texture : TextureTable)
 			texture.second->onResetDevice();
+		for (auto& text : DXTTable)
+			text.second.onResetDevice();
 		textdraw->onResetDevice();
 	}
 	VOID Game2D::deleteAll()
@@ -258,8 +262,16 @@ namespace GameEngine {
 	{
 		TextureTable[TEXTURE_NAME] = GameEngine::TextureManager::CreateTextureManager();
 		if (!TextureTable[TEXTURE_NAME]->initialize(graphicDriver, TEXTURE_PATH))
-			throw(CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error initializing texture, when add texture in table"));
+			throw(CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error initializing texture"));
 	}
+
+	VOID Game2D::addDirectTextFont(const string& TextName, INT32 FontHeight, BOOL bold, BOOL italic, LPCSTR FontName)
+	{
+		DXTTable[TextName] = DirectText(wnd->getWidth(), wnd->getHeight());
+		if (!DXTTable[TextName].initialize(graphicDriver, FontHeight, bold, italic, FontName))
+			throw(CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error initializing direct text"));
+	}
+
 
 #pragma warning(push)
 #pragma warning(disable : 26812)

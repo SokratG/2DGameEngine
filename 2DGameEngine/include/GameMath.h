@@ -544,6 +544,14 @@ public:
 		_Type _w = M.m[3] * x + M.m[7] * y + M.m[11] * z + M.m[15] * w;
 		return Vec3(_x, _y, _z, _w);
 	}
+	Mat4<_Type> multByColumn(const Vec3& _v) const {
+		return Mat4<_Type>{
+				x* _v.x, x* _v.y, x* _v.z, x* _v.w,
+				y* _v.x, y* _v.y, y* _v.z, y* _v.w,
+				z* _v.x, z* _v.y, z* _v.z, z* _v.w,
+				w* _v.x, w* _v.y, w* _v.z, w* _v.w
+		};
+	}
 	Vec3 Project(Vec3& _v) {
 		Vec3 res = _v.normalize() * dot(_v.normalize());
 		return res;
@@ -552,8 +560,8 @@ public:
 		Vec3 res = *this - Project(_v);
 		return res;
 	}
-	Vec3 Reflect(Vec3& _v) {
-		Vec3 res = *this - (Project(_v) * static_cast < _Type>(2)); // (Reject(_v) * 2) - this; 
+	Vec3 Reflect(Vec3& _v, real32 coeff = 2) {
+		Vec3 res = *this - (Project(_v) * coeff); // (Reject(_v) * 2) - this; 
 		return res;
 	}
 public:	
@@ -699,6 +707,7 @@ public:
 					 m[12] - mat.m[12], m[13] - mat.m[13], m[14] - mat.m[14], m[15] - mat.m[15] };
 	}
 	Mat4 operator*(const Mat4& mat) const;
+	Vec3<_Type> operator*(const Vec3<_Type>& vec) const;
 	_Type det() const;
 	Mat4 transpose() const;
 	_Type trace() const;
@@ -757,6 +766,18 @@ Mat4<_Type> Mat4<_Type>::operator*(const Mat4& mat) const {
 		x12, x13, x14, x15		
 	};
 }
+
+template<typename _Type>
+Vec3<_Type> Mat4<_Type>::operator*(const Vec3<_Type>& vec) const
+{
+	_Type x11 = m[0] * vec.x + m[1] * vec.y + m[2] * vec.z + m[3] * vec.w;
+	_Type x21 = m[4] * vec.x + m[5] * vec.y + m[6] * vec.z + m[7] * vec.w;
+	_Type x31 = m[8] * vec.x + m[9] * vec.y + m[10] * vec.z + m[11] * vec.w;
+	_Type x41 = m[12] * vec.x + m[13] * vec.y + m[14] * vec.z + m[15] * vec.w;
+	return Vec3<_Type>( x11, x21, x31, x41 );
+}
+
+
 
 template<typename _Type>
 _Type Mat4<_Type>::det() const {
