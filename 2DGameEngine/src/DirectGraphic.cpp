@@ -284,6 +284,46 @@ namespace GameEngine {
 		sprite->Draw(spritedata.texture, &spritedata.objrect, nullptr, nullptr, color);
 	}
 
+
+	HRESULT DirectGraphic::createVertexBuffer(VertexC verts[], UINT size, LP_VERTEXBUFFER& vertexBuffer)
+	{
+		result = E_FAIL;
+		// create vertex buffer
+		result = device3d->CreateVertexBuffer(size, D3DUSAGE_WRITEONLY, D3DFVF_VERTEX, D3DPOOL_DEFAULT, &vertexBuffer, nullptr);
+		if (FAILED(result))
+			return E_FAIL;
+		// lock buffer before data can be transferred in
+		PVOID ptr;
+		result = vertexBuffer->Lock(0, size, (PVOID*)&ptr, 0);
+		if (FAILED(result))
+			return E_FAIL;
+		CopyMemory(ptr, verts, size);
+		vertexBuffer->Unlock();
+		return result;
+	}
+
+
+	BOOL DirectGraphic::drawQuad(LP_VERTEXBUFFER vertexBuffer)
+	{
+		result = E_FAIL;
+		if (!vertexBuffer)
+			return FALSE;
+		// enable alpha blend
+		device3d->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+		// create stream source vertices
+		device3d->SetStreamSource(0, vertexBuffer, 0, sizeof(VertexC));
+		// Set the current vertex stream declaration.
+		device3d->SetFVF(D3DFVF_VERTEX);	//  position of a transformed vertex and diffuse color component.
+		result = device3d->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
+		// alpha blend off
+		device3d->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		if (FAILED(result))
+			return FALSE;
+		return TRUE;
+	}
+
+
 	// get handle graphic device context(windows)
 	HDC DirectGraphic::getGraphicDC() noexcept {
 		return GetDC(*pWnd->getHWND());
@@ -310,6 +350,12 @@ namespace GameEngine {
 		initD3Dpp();
 		sprite->OnLostDevice();
 		result = device3d->Reset(&d3dpp);
+
+		// configure alpha blend
+		device3d->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		device3d->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		device3d->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
 		sprite->OnResetDevice();
 
 		return result;

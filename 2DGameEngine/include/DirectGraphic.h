@@ -21,6 +21,7 @@
 #define LP_DXFONT LPD3DXFONT
 #define SETCOLOR_ARGB(A,R,G,B) ((COLOR_ARGB) ( ( ( A & 0xFF) << 24) | ( ( R & 0xFF) << 16 ) | ( ( G & 0xFF) << 8) | ( B & 0xFF) ) )
 #define COLOR24BIT _D3DFORMAT::D3DFMT_X8R8G8B8	
+#define D3DFVF_VERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)	// (D3DFVF_XYZ | D3DFVF_TEX1)
 #define D3D_RGB(R,G,B) D3DCOLOR_XRGB(R, G, B)
 
 #ifndef D3_ARGB_DEFAULT
@@ -67,7 +68,7 @@ struct VertexC              // Vertex with Color
 {
 	FLOAT x, y, z;          // vertex location
 	FLOAT rhw;              // reciprocal homogeneous W (set to 1)
-	ULONG color;    // vertex color
+	ULONG color;			// vertex color
 };
 
 namespace GameEngine {
@@ -112,8 +113,8 @@ namespace GameEngine {
 		LP_SPRITE getSprite() noexcept;
 		HRESULT loadTexture(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load texture from resource file
 		HRESULT loadTextureSystemMem(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load the texture into system memory(system memory is lockable)
-		//HRESULT createVertexBuffer(VertexC verts[], UINT size, LP_VERTEXBUFFER& vertexBuffer);
-		//BOOL drawQuad(LP_VERTEXBUFFER vertexBuffer);
+		HRESULT createVertexBuffer(VertexC verts[], UINT size, LP_VERTEXBUFFER& vertexBuffer);
+		BOOL drawQuad(LP_VERTEXBUFFER vertexBuffer);
 		VOID spriteBeginScene();	// sprite begin to draw in scene
 		VOID spriteEndScene();		// sprite end to draw in scene
 		VOID drawSprite(const SpriteData& spritedata, COLOR_ARGB color);
