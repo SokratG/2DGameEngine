@@ -293,10 +293,11 @@ namespace GameEngine {
 		if (FAILED(result))
 			return E_FAIL;
 		// lock buffer before data can be transferred in
-		PVOID ptr;
+		PVOID ptr = nullptr;
 		result = vertexBuffer->Lock(0, size, (PVOID*)&ptr, 0);
-		if (FAILED(result))
+		if (FAILED(result)) 
 			return E_FAIL;
+					
 		CopyMemory(ptr, verts, size);
 		vertexBuffer->Unlock();
 		return result;
@@ -310,9 +311,9 @@ namespace GameEngine {
 			return FALSE;
 		// enable alpha blend
 		device3d->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-
 		// create stream source vertices
 		device3d->SetStreamSource(0, vertexBuffer, 0, sizeof(VertexC));
+
 		// Set the current vertex stream declaration.
 		device3d->SetFVF(D3DFVF_VERTEX);	//  position of a transformed vertex and diffuse color component.
 		result = device3d->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);

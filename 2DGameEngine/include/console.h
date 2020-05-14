@@ -9,9 +9,10 @@ using std::string;
 using std::deque;
 
 // create debug console in system
-HANDLE CreateConsole(VOID)
+static HANDLE CreateConsole(VOID)
 {
 	static HANDLE _console;
+	static FILE* pFile;
 	// detach from the current console window
 	// if launched from a console window, that will still run waiting for the new console (below) to close
 	FreeConsole();
@@ -21,21 +22,21 @@ HANDLE CreateConsole(VOID)
 	AttachConsole(GetCurrentProcessId());
 
 	// reopen the std I/O streams to redirect I/O to the new console
-	freopen("CON", "w", stdout);
-	freopen("CON", "w", stderr);
-	freopen("CON", "r", stdin);
+	freopen_s(&pFile, "CON", "w", stdout);
+	freopen_s(&pFile, "CON", "w", stderr);
+	freopen_s(&pFile, "CON", "r", stdin);
 
 	_console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	return _console;
 }
 
-VOID SetColorConsole(_In_ HANDLE& hConsole, _In_ WORD color)
+static VOID SetColorConsole(_In_ HANDLE& hConsole, _In_ WORD color)
 {
 	SetConsoleTextAttribute(hConsole, color);
 }
 
-VOID ResetConsoleColor(_In_ HANDLE& hConsole)
+static VOID ResetConsoleColor(_In_ HANDLE& hConsole)
 {
 	SetConsoleTextAttribute(hConsole, CDEFUALT);
 }
