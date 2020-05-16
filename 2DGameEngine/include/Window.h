@@ -26,6 +26,17 @@ using std::endl;
 
 namespace GameEngine {
 	
+	using std::wstring;
+	using std::string;
+
+	struct IconResource
+	{
+		HICON smallIcon;
+		HICON standartIcon;
+		IconResource(HICON _smallIco = nullptr, HICON _standIco = nullptr) : smallIcon(_smallIco), standartIcon(_standIco) {}
+		IconResource(const IconResource& ir) { smallIcon = ir.smallIcon, standartIcon = ir.standartIcon; }
+		IconResource& operator=(const IconResource& ir) { smallIcon = ir.smallIcon, standartIcon = ir.standartIcon; return *this; }
+	};
 
 	class Window
 	{
@@ -71,6 +82,8 @@ namespace GameEngine {
 		INT32 getY() const {
 			return Y;
 		}
+
+		VOID setSmallIcon(const HICON& icons);
 	};
 	LRESULT WINAPI DefaultWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

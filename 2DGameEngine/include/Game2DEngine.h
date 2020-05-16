@@ -8,10 +8,14 @@
 #include "Text.h"
 #include "DirectText.h"
 
+
 using TexturesTable = std::unordered_map<string, GameEngine::TextureManager*>;
 using DXTextTable = std::unordered_map<string, GameEngine::DirectText>;
+using Icon = HICON;
+
 namespace GameEngine {
 
+#define MAX_PATH 256
 
 	class Game2D
 	{
@@ -32,6 +36,7 @@ namespace GameEngine {
 		BOOL initialized;			// game is init
 		TexturesTable TextureTable;			// texture table
 		DXTextTable   DXTTable;
+		wstring PATH_APP;
 		static Game2D* currentGame;
 		friend LRESULT WinProcWrapper(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	public:
@@ -57,8 +62,10 @@ namespace GameEngine {
 		Text* getTextDraw() noexcept { return textdraw; }
 		VOID exitGame();
 		VOID addTexture(LPCSTR TEXTURE_NAME, LPCWSTR TEXTURE_PATH);
+		VOID SetGameIcon(const Icon& icon);
 		VOID addDirectTextFont(const string& TextName, INT32 FontHeight, BOOL bold, BOOL italic, LPCSTR FontName);
 		VOID setDisplayMode(GraphColor::DISPLAY_MODE mode = GraphColor::TOGGLE); // Set display mode (fullscreen, window or toggle)
+		virtual Icon makeIconFromResource(USHORT ID_ICO);
 		virtual VOID setCurrentGame(Game2D* _pGame) final;
 		virtual VOID update() = 0; // update entites
 		virtual VOID processAI() = 0; // perfom AI calc

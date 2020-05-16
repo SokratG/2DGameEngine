@@ -1,8 +1,9 @@
 #include "Window.h"
 
+
 namespace GameEngine {
 	// 
-
+#define GCL_HICON -14
 
 	Window::Window() : FullScreen(FALSE), MainIsCreate(FALSE), X(0), Y(0), Width(0), Height(0)
 	{
@@ -186,6 +187,15 @@ namespace GameEngine {
 
 	}
 	
+	VOID Window::setSmallIcon(const HICON& icons)
+	{
+		SendMessage(*hWnd, WM_SETICON, ICON_SMALL, (LONG)icons);
+		SendMessage(*hWnd, WM_SETICON, ICON_BIG, (LONG)icons);
+
+		SendMessage(GetWindow(*hWnd, GW_OWNER), WM_SETICON, ICON_SMALL, (LONG)icons);
+		SendMessage(GetWindow(*hWnd, GW_OWNER), WM_SETICON, ICON_BIG, (LONG)icons);
+	}
+
 	VOID Window::resetWindowMode() {
 		SetWindowLongA(*hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 		SetWindowPos(*hWnd,			// handle window
@@ -214,6 +224,5 @@ namespace GameEngine {
 		}
 		return 0;
 	}
-
 
 };

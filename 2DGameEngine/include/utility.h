@@ -5,9 +5,14 @@
 #include <random>
 #include <limits>
 #include <chrono>
+#include <locale>
+#include <codecvt>
 
 using std::list;
 using std::string;
+using std::wstring;
+using std::wstring_convert;
+using std::codecvt_utf8;
 using std::numeric_limits;
 
 namespace GameEngine {
@@ -54,7 +59,6 @@ namespace GameEngine {
 	{
 		in.read(reinterpret_cast<char*>(&t), sizeof(T));
 	}
-
 
 	bool startwith(const string& from, const string str);
 

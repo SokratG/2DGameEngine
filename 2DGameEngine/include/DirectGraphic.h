@@ -55,6 +55,7 @@ namespace GraphColor {
 	const COLOR_ARGB GRAY    =	D3DCOLOR_ARGB(255, 128, 128, 128);
 	const COLOR_ARGB WHITE   =	D3DCOLOR_ARGB(255, 255, 255, 255);
 	const COLOR_ARGB YELLOW  =	D3DCOLOR_ARGB(255, 255, 255, 0);
+	const COLOR_ARGB LBLUE	 =	D3DCOLOR_ARGB(255, 230, 230, 255);
 	//
 	const COLOR_ARGB FILTER  =	D3DCOLOR_ARGB(0, 0, 0, 0);	// specify drawing for color filter
 	const COLOR_ARGB ALPHA25 =	D3DCOLOR_ARGB(64, 255, 255, 255); // AND with color to get alpha channel 25%

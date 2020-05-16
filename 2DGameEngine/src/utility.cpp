@@ -1,5 +1,8 @@
 #include <utility.h>
 #include <sstream>
+#include <string>
+
+
 
 
 
@@ -8,9 +11,6 @@ namespace GameEngine {
 	// init static random class members
 	std::mt19937 Random::_RandomEngine;
 	std::uniform_int_distribution<std::mt19937::result_type> Random::_Distribution;
-
-
-
 
 	bool startwith(const string& from, const string str) {
 		return  (from.rfind(str, 0) == 0); //check start position must be 0

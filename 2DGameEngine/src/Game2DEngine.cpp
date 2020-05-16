@@ -1,6 +1,5 @@
 #include "Game2DEngine.h"
 
-
 namespace GameEngine {
 
 	Game2D* Game2D::currentGame = nullptr;
@@ -25,6 +24,12 @@ namespace GameEngine {
 	VOID Game2D::initialize(const LPCWSTR APP_TITLE, const INT32 WINDOW_WIDTH, const INT32 WINDOW_HEIGHT, BOOL FULLSCREENMODE)
 	{
 		Game2D::currentGame = this;
+		WCHAR szFileName[MAX_PATH];
+		DWORD res = GetModuleFileName(nullptr, szFileName, MAX_PATH);
+		if (res == 0){
+			throw CoreError::GameEngineError(CoreError::FATAL_ERROR, "Error can't find game program path");
+		}
+		PATH_APP = std::move(szFileName);
 		try {
 			wnd = Window::CreateWindowClass();
 			wnd->CreateMainWindow(GetModuleHandle(NULL), APP_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, FULLSCREENMODE, WinProcWrapper);
@@ -88,6 +93,17 @@ namespace GameEngine {
 
 		// display backbuffer 
 		graphicDriver->showBackBuffer();
+	}
+
+	HICON Game2D::makeIconFromResource(USHORT ID_ICO)
+	{
+		return LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_ICO));
+	}
+
+	VOID Game2D::SetGameIcon(const Icon& icon)
+	{
+		if (initialized)
+			wnd->setSmallIcon(icon);
 	}
 
 
