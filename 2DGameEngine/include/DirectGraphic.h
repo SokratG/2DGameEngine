@@ -56,6 +56,8 @@ namespace GraphColor {
 	const COLOR_ARGB WHITE   =	D3DCOLOR_ARGB(255, 255, 255, 255);
 	const COLOR_ARGB YELLOW  =	D3DCOLOR_ARGB(255, 255, 255, 0);
 	const COLOR_ARGB LBLUE	 =	D3DCOLOR_ARGB(255, 230, 230, 255);
+	const COLOR_ARGB LGRAY	 =  D3DCOLOR_ARGB(192, 192, 192, 192);
+	const COLOR_ARGB DBLUE	=	D3DCOLOR_ARGB(255, 100, 100, 192);
 	//
 	const COLOR_ARGB FILTER  =	D3DCOLOR_ARGB(0, 0, 0, 0);	// specify drawing for color filter
 	const COLOR_ARGB ALPHA25 =	D3DCOLOR_ARGB(64, 255, 255, 255); // AND with color to get alpha channel 25%
@@ -90,7 +92,7 @@ namespace GameEngine {
 		BOOL FullScreen;
 		INT32 Width;
 		INT32 Height;
-		D3DCOLOR backgroundColor;
+		COLOR_ARGB backgroundColor;	// D3DCOLOR
 		// Initialize D3D presentation paramters
 		VOID initD3Dpp();
 		DirectGraphic() noexcept;
@@ -122,6 +124,8 @@ namespace GameEngine {
 		// change display mode for window
 		// created D3DPOOL_DEFAULT surfaces are freed. all surface recreated
 		VOID changeDisplayMode(GraphColor::DISPLAY_MODE mode = GraphColor::TOGGLE); 
+		INT32 getGraphicWidth() const;
+		INT32 getGraphicHeight() const;
 		static DirectGraphic* CreateDirectGraphic();	// fabric function member
 	};
 

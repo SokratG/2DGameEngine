@@ -89,7 +89,7 @@ namespace GameEngine {
 		COLOR_ARGB FontCOLOR;
 		COLOR_ARGB BackgroundCOLOR;
 		RECT TextRect;		// rect for text output
-		VertexC VertConsole[4];	// vertices for draw rectangle console 
+		VertexC VertConsole[RECT_VERT];	// vertices for draw rectangle console 
 		LP_VERTEXBUFFER vertexBuffer; // vertex buffer for DirectX
 		BOOL initialized;
 		INT32 scrollAmount;		// number of lines for scrolling the display

@@ -7,6 +7,9 @@
 #include "Entity.h"
 #include "Text.h"
 #include "DirectText.h"
+// support classes
+#include "MessageDialog.h"
+#include "console.h"
 
 
 using TexturesTable = std::unordered_map<string, GameEngine::TextureManager*>;
@@ -14,8 +17,6 @@ using DXTextTable = std::unordered_map<string, GameEngine::DirectText>;
 using Icon = HICON;
 
 namespace GameEngine {
-
-#define MAX_PATH 256
 
 	class Game2D
 	{

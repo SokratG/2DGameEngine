@@ -408,6 +408,15 @@ namespace GameEngine {
 		this->backgroundColor = _color;
 	};
 
+	INT32 DirectGraphic::getGraphicWidth() const
+	{
+		return Width;
+	}
+	INT32 DirectGraphic::getGraphicHeight() const
+	{
+		return Height;
+	}
+
 #pragma warning(push)
 #pragma warning(disable : 26812)
 	VOID DirectGraphic::changeDisplayMode(GraphColor::DISPLAY_MODE mode)

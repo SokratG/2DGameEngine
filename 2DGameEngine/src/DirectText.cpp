@@ -39,7 +39,6 @@ namespace GameEngine {
 			return FALSE;
 		}
 
-
 		// create transformation matrix
 		textMatrix.identity();
 

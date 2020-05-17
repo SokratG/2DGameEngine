@@ -10,7 +10,10 @@
 #define SHIFTED (short)0x8000
 #define COMPLETE 1
 #define ERROR_APP -1
-
+#define MAX_PATH 256
+#define MAX_NAME 64
+#define MAX_TYPE 2
+#define RECT_VERT 4
 
 // color console
 #define CRED 12
