@@ -75,7 +75,7 @@ namespace GameEngine {
         MessageDialog();
         virtual ~MessageDialog();
         BOOL initialize(DirectGraphic* pGraphicDevice, Input* input, HWND hWnd, const MDParam& MessageDialogParameters);
-        VOID prepareVerteces();
+        VOID prepareVertices();
         VOID draw();
         // getters
         INT32 getButtonClicked() const { return ButtonClicked; }

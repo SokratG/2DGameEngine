@@ -60,7 +60,7 @@ namespace GameEngine {
 	}
 
 
-    VOID MessageDialog::prepareVerteces()
+    VOID MessageDialog::prepareVertices()
     {
         SAFE_RELEASE(DialogVerts);
         SAFE_RELEASE(BorderVerts);
@@ -158,10 +158,10 @@ namespace GameEngine {
         graphicDevice->createVertexBuffer(MSDVert, sizeof(MSDVert), ButtonVerts);
 
         // set buttonRect
-        ButtonRect.left = (LONG)MSDVert[0].x;
-        ButtonRect.right = (LONG)MSDVert[1].x;
-        ButtonRect.top = (LONG)MSDVert[0].y;
-        ButtonRect.bottom = (LONG)MSDVert[2].y;
+        ButtonRect.left = static_cast<LONG>(MSDVert[0].x);
+        ButtonRect.right = static_cast<LONG>(MSDVert[1].x);
+        ButtonRect.top = static_cast<LONG>(MSDVert[0].y);
+        ButtonRect.bottom = static_cast<LONG>(MSDVert[2].y);
 
         // button2 top left
         MSDVert[0].x = MDP.X + MDP.WIDTH - MDP.BUTTON_WIDTH * 1.2f;
@@ -190,10 +190,10 @@ namespace GameEngine {
         graphicDevice->createVertexBuffer(MSDVert, sizeof(MSDVert), Button2Verts);
 
         // set button2Rect
-        Button2Rect.left = (LONG)MSDVert[0].x;
-        Button2Rect.right = (LONG)MSDVert[1].x;
-        Button2Rect.top = (LONG)MSDVert[0].y;
-        Button2Rect.bottom = (LONG)MSDVert[2].y;
+        Button2Rect.left = static_cast<LONG>(MSDVert[0].x);
+        Button2Rect.right = static_cast<LONG>(MSDVert[1].x);
+        Button2Rect.top = static_cast<LONG>(MSDVert[0].y);
+        Button2Rect.bottom = static_cast<LONG>(MSDVert[2].y);
     }
 
 
@@ -209,7 +209,7 @@ namespace GameEngine {
 
         graphicDevice->spriteBeginScene();                
 
-        if (Text.size() == 0)
+        if (Text.empty())
             return;
         // display text on MessageDialog
         DXFont.setFontColor(MDP.FONT_COLOR);
@@ -235,17 +235,17 @@ namespace GameEngine {
 		Text = str + "\n\n\n";        // leave some room for buttons
 
 		// Set textRect to text area of dialog
-		TextRect.left = (LONG)(MDP.X + MDP.MARGIN);
-		TextRect.right = (LONG)(MDP.X + MDP.WIDTH - MDP.MARGIN);
-		TextRect.top = (LONG)(MDP.Y + MDP.MARGIN);
-		TextRect.bottom = (LONG)(MDP.Y + MDP.HEIGHT - MDP.MARGIN);
+		TextRect.left = static_cast<LONG>(MDP.X + MDP.MARGIN);
+		TextRect.right = static_cast<LONG>(MDP.X + MDP.WIDTH - MDP.MARGIN);
+		TextRect.top = static_cast<LONG>(MDP.Y + MDP.MARGIN);
+		TextRect.bottom = static_cast<LONG>(MDP.Y + MDP.HEIGHT - MDP.MARGIN);
 
 		// Set textRect.bottom to precise height required for text
 		// No text is printed with DT_CALDRECT option.
 		DXFont.print(Text, TextRect, DT_CENTER | DT_WORDBREAK | DT_CALCRECT);
 		MDP.HEIGHT = TextRect.bottom - (INT32)MDP.Y + MDP.BORDER + MDP.MARGIN;
 
-		prepareVerteces();                 // prepare the vertex buffers
+		prepareVertices();                 // prepare the vertex buffers
 		ButtonClicked = 0;              // clear buttonClicked
 		visible = TRUE;
 	}
@@ -267,8 +267,8 @@ namespace GameEngine {
             // calculate screen ratios incase window was resized
             RECT clientRect;
             GetClientRect(hWnd, &clientRect);
-            screenRatioX = (FLOAT)game_width / clientRect.right;
-            screenRatioY = (FLOAT)game_height / clientRect.bottom;
+            screenRatioX = static_cast<FLOAT>(game_width / clientRect.right);
+            screenRatioY = static_cast<FLOAT>(game_height / clientRect.bottom);
         }
 
         if (input->getMouseLButton())       // if mouse left button
@@ -301,7 +301,7 @@ namespace GameEngine {
 	{
 		if (!initialized)
 			return;
-		prepareVerteces();
+		prepareVertices();
 		DXFont.onResetDevice();
 	}
 

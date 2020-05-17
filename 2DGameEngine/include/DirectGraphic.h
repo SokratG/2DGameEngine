@@ -4,6 +4,10 @@
 
 #ifdef D3D9
 
+#ifdef _DEBUG
+#define D3D_DEBUG_INFO
+#endif
+
 #pragma warning(push)
 #pragma warning(disable : 26495)
 #include <d3d9.h>

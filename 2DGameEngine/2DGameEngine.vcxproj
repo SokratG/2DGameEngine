@@ -107,6 +107,7 @@
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\GameMath.cpp" />
+    <ClCompile Include="src\InputDialog.cpp" />
     <ClCompile Include="src\MessageDialog.cpp" />
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
@@ -125,6 +126,7 @@
     <ClCompile Include="include\GameMath.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Input.h" />
+    <ClInclude Include="include\InputDialog.h" />
     <ClInclude Include="include\MessageDialog.h" />
     <ClInclude Include="include\Sprite.h" />
     <ClInclude Include="include\Text.h" />
