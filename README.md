@@ -12,7 +12,7 @@ Simple 2D game engine
 * interactive element like a Input Dialog and Message Dialog
 * console for debug game
 * Network data exchange
-# For programming game be inherited a Game2D class - implement pure virtual member function: update(), processAI(), colissions(), render().Initialize Game2D class and remainings class. Use game entity for game object, load texture and draw sprite for graphic , create audio file 'xsb' and 'xwb' format from 'wav' with Xact3 and make a game logic.
+## For programming game be inherited a Game2D class - implement pure virtual member function: update(), processAI(), colissions(), render().Initialize Game2D class and remainings class. Use game entity for game object, load texture and draw sprite for graphic , create audio file 'xsb' and 'xwb' format from 'wav' with Xact3 and make a game logic.
 
 # Building dependency:
 * Windows OS(x64)
