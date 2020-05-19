@@ -22,6 +22,8 @@
 #define VECTOR3 D3DXVECTOR3
 #define MATRIX4 D3DXMATRIX
 #define LP_VERTEXBUFFER LPDIRECT3DVERTEXBUFFER9
+#define D3DQUERY IDirect3DQuery9
+#define PD3DQUERY IDirect3DQuery9*
 #define LP_DXFONT LPD3DXFONT
 #define SETCOLOR_ARGB(A,R,G,B) ((COLOR_ARGB) ( ( ( A & 0xFF) << 24) | ( ( R & 0xFF) << 16 ) | ( ( G & 0xFF) << 8) | ( B & 0xFF) ) )
 #define COLOR24BIT _D3DFORMAT::D3DFMT_X8R8G8B8	
@@ -89,6 +91,8 @@ namespace GameEngine {
 		D3DPRESENT_PARAMETERS d3dpp;
 		D3DDISPLAYMODE pMode;
 		LP_SPRITE sprite;
+		PD3DQUERY pOcclusionQuery;   // for pixel perfect collision detection
+		DWORD   numberOfPixelsColliding;    // for pixel perfect collision detection
 		//
 		HRESULT result; // for return Windows code
 		// HWND hWnd;
@@ -97,6 +101,7 @@ namespace GameEngine {
 		INT32 Width;
 		INT32 Height;
 		COLOR_ARGB backgroundColor;	// D3DCOLOR
+		BOOL stencilSupport; // true if device supports stencil buffer
 		// Initialize D3D presentation paramters
 		VOID initD3Dpp();
 		DirectGraphic() noexcept;
@@ -115,8 +120,10 @@ namespace GameEngine {
 		HRESULT beginScene() noexcept;
 		HRESULT endScene() noexcept;
 		BOOL getFullScreen() const;
+		BOOL getStencilSupport() const;
 		LP_3D get3DDirect() noexcept;
 		LP_3DDEVICE get3DDevice() noexcept;
+		PD3DQUERY getPOcclusionQuery() const;
 		LP_SPRITE getSprite() noexcept;
 		HRESULT loadTexture(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load texture from resource file
 		HRESULT loadTextureSystemMem(LPCWSTR filename, COLOR_ARGB transcolor, UINT& width, UINT& height, LP_TEXTURE& texture); // load the texture into system memory(system memory is lockable)
@@ -124,7 +131,8 @@ namespace GameEngine {
 		BOOL drawQuad(LP_VERTEXBUFFER vertexBuffer);
 		VOID spriteBeginScene();	// sprite begin to draw in scene
 		VOID spriteEndScene();		// sprite end to draw in scene
-		VOID drawSprite(const SpriteData& spritedata, COLOR_ARGB color);
+		VOID drawSprite(const SpriteData& spritedata, COLOR_ARGB color = GraphColor::WHITE);
+		DWORD pixelCollision(const SpriteData& sprite1, const SpriteData& sprite2); // Return the number of pixels colliding between the two sprites.
 		// change display mode for window
 		// created D3DPOOL_DEFAULT surfaces are freed. all surface recreated
 		VOID changeDisplayMode(GraphColor::DISPLAY_MODE mode = GraphColor::TOGGLE); 

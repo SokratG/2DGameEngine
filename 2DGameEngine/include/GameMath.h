@@ -24,6 +24,7 @@ using int32 = int;
 using int64 = long long;
 using uint32 = unsigned int;
 using uint64 = unsigned long long;
+using ulong = unsigned long;
 
 constexpr real32 _PI = 3.141592653589793238462643383279502f;
 constexpr real32 _PI_2 = 6.283185307179586476925286766559005f;

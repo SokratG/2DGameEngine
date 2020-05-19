@@ -41,8 +41,8 @@ const UCHAR _FORWARD_KEY2 = VK_UP; // Up arrow
 const UCHAR _BACK_KEY2 =    VK_DOWN; // Down arrow
 
 // game settings
-const INT32 GAME_WIDTH = 1280;
-const INT32 GAME_HEIGHT = 720;
+const INT32 _GAME_WIDTH = 1280;
+const INT32 _GAME_HEIGHT = 720;
 const FLOAT MIN_FRAME_RATE = 10.f; 
 const FLOAT FRAME_RATE = 100.f; // the target frame rate (frames/sec)
 const FLOAT MIN_FRAME_TIME = 1.f / FRAME_RATE; // minimum desired time for 1 frame

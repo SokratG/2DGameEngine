@@ -45,6 +45,8 @@ namespace GameEngine {
 		virtual RECT getSpriteRect() const { return spriteData.objrect; }
 		virtual BOOL getAnimateIsComplete() const { return animationCompleted; }
 		virtual COLOR_ARGB getColorFilter() const { return colorFilter; }
+		const virtual SpriteData& getSpriteData() { return spriteData; }
+		const virtual SpriteData& getSpriteInfo() { return spriteData; }
 
 		// setters
 		virtual VOID setVisible(BOOL v) { visible = v; }

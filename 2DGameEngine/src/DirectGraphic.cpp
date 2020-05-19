@@ -14,11 +14,13 @@ namespace GameEngine {
 		this->direct3d = nullptr;
 		this->device3d = nullptr;
 		this->FullScreen = FALSE;
-		this->Width = GAME_WIDTH;
-		this->Height = GAME_HEIGHT;
+		this->Width = _GAME_WIDTH;
+		this->Height = _GAME_HEIGHT;
 		this->result = S_OK;
 		this->pWnd = nullptr;
 		this->sprite = nullptr;
+		this->pOcclusionQuery = nullptr;
+		this->numberOfPixelsColliding = 0;
 		backgroundColor = GraphColor::BACK_COLOR;
 	}
 
@@ -29,6 +31,7 @@ namespace GameEngine {
 
 	VOID DirectGraphic::releaseAll()
 	{
+		SAFE_RELEASE(pOcclusionQuery);
 		SAFE_RELEASE(sprite);
 		SAFE_RELEASE(direct3d);
 		SAFE_RELEASE(device3d);
@@ -86,6 +89,19 @@ namespace GameEngine {
 		device3d->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 		device3d->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		device3d->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+		// Check if the device supports 8-bit stencil buffering. 
+		if (FAILED(direct3d->CheckDeviceFormat( _caps.AdapterOrdinal,
+												_caps.DeviceType,
+												d3dpp.BackBufferFormat,
+												D3DUSAGE_DEPTHSTENCIL,
+												D3DRTYPE_SURFACE,
+												D3DFMT_D24S8)))
+			stencilSupport = FALSE;
+		else
+			stencilSupport = TRUE;
+		// Create query object, used for pixel perfect collision detection
+		device3d->CreateQuery(D3DQUERYTYPE_OCCLUSION, &pOcclusionQuery);
 	}
 
 #pragma warning(push)
@@ -243,6 +259,59 @@ namespace GameEngine {
 		return result;
 	}
 
+
+	DWORD DirectGraphic::pixelCollision(const SpriteData& sprite1, const SpriteData& sprite2)
+	{
+		if (!stencilSupport)     // if no stencil buffer support
+			return 0;
+
+		beginScene();
+
+		// Set up stencil buffer using current entity
+		device3d->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+		device3d->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+		device3d->SetRenderState(D3DRS_STENCILREF, 0x1);
+		device3d->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+		device3d->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+		device3d->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+		device3d->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_REPLACE);
+
+		// Write a 1 into the stencil buffer for each non-transparent pixel in ent
+		spriteBeginScene();
+		// Enable stencil buffer (must be after spriteBegin)
+		device3d->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+		drawSprite(sprite2);            // write 1s to stencil buffer
+		spriteEndScene();
+
+		// Change stencil buffer to only allow writes where the stencil value is 1
+		// (where the ent sprite is colliding with the current sprite)
+		device3d->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_EQUAL);
+		device3d->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+
+		// Begin occlusion query to count pixels that are drawn
+		pOcclusionQuery->Issue(D3DISSUE_BEGIN);
+
+		spriteBeginScene();
+		// Enable stencil buffer (must be after spriteBegin)
+		device3d->SetRenderState(D3DRS_STENCILENABLE, true);
+		drawSprite(sprite1);            // draw current entity 
+		spriteEndScene();
+		// End occlusion query
+		pOcclusionQuery->Issue(D3DISSUE_END);
+
+		// Wait until the GPU is finished.
+		while (S_FALSE == pOcclusionQuery->GetData(&numberOfPixelsColliding,
+			sizeof(DWORD), D3DGETDATA_FLUSH))
+		{
+		}
+
+		// Turn off stencil
+		device3d->SetRenderState(D3DRS_STENCILENABLE, false);
+
+		endScene();
+		return numberOfPixelsColliding;
+	}
+
 	VOID DirectGraphic::drawSprite(const SpriteData& spritedata, COLOR_ARGB color) { 
 
 		if(!spritedata.texture)
@@ -324,6 +393,17 @@ namespace GameEngine {
 		return TRUE;
 	}
 
+
+	BOOL DirectGraphic::getStencilSupport() const
+	{
+		return stencilSupport;
+	}
+
+
+	PD3DQUERY DirectGraphic::getPOcclusionQuery() const
+	{
+		return pOcclusionQuery;
+	}
 
 	// get handle graphic device context(windows)
 	HDC DirectGraphic::getGraphicDC() noexcept {

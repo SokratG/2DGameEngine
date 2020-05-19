@@ -48,7 +48,7 @@ namespace GameEngine {
 		virtual ~Game2D();
 		LRESULT WINAPI messageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam); // windows message handler
 		virtual VOID initialize(const LPCWSTR APP_TITLE, 
-								const INT32 WINDOW_WIDTH = GAME_WIDTH, const INT32 WINDOW_HEIGHT = GAME_HEIGHT,
+								const INT32 WINDOW_WIDTH, const INT32 WINDOW_HEIGHT,
 								BOOL FULLSCREENMODE = FALSE); // init game	
 		virtual VOID initAudio(LPCWSTR WAVE_BANK_SOURCE, LPCWSTR SOUND_BANK_SOURCE);
 		virtual VOID initTextDraw(LPCWSTR filename, FontParameters& fp);
@@ -62,6 +62,7 @@ namespace GameEngine {
 		Input* getInput() noexcept { return input; }
 		Audio* getAudio() noexcept { return audio; }
 		Text* getTextDraw() noexcept { return textdraw; }
+		real32 getFPS() const { return fps; }
 		VOID exitGame();
 		VOID addTexture(LPCSTR TEXTURE_NAME, LPCWSTR TEXTURE_PATH);
 		VOID SetGameIcon(const Icon& icon);
@@ -78,6 +79,8 @@ namespace GameEngine {
 		// Call graphics->spriteEnd();
 		//   draw non-sprites
 		virtual VOID render() = 0; // render graphics
+
+		static VOID GameLoop(Game2D* pGame, MSG& msg);
 	};
 	
 	

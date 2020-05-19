@@ -20,7 +20,7 @@ Rect WinRect2Edge(const RECT& rt);
 namespace GameEngine {
 	class Game2D;
 
-	enum COLLISION_TYPE {NONE, CIRCLE, BOX, ROTATED_BOX};
+	enum COLLISION_TYPE {NONE, CIRCLE, BOX, ROTATED_BOX, PIXEL_PERFECT};
 	const real32 GRAVITY = 6.67428e-11f; // N(m/kg)^2 // 9.81
 	
 
@@ -43,7 +43,8 @@ namespace GameEngine {
 			real32 mass;
 			real32 force; // force of gravity
 			real32 gravity; 
-			PhysicalObject() : edge1Min(0), edge1Max(0), edge3Min(0), edge3Max(0),
+			ulong  pixelsColliding;
+			PhysicalObject() : edge1Min(0), edge1Max(0), edge3Min(0), edge3Max(0), pixelsColliding(0),
 							rotatedBoxReady(false), radius(1), sumRadiiSquared(0), mass(1.), 
 							force(0), gravity(GRAVITY), rr(0), edge(-1, -1, 1, 1) {}
 		};
@@ -65,11 +66,13 @@ namespace GameEngine {
 		virtual bool collideRotatedBox(Entity& other, Vec2<real32>& collisionVector);
 		// collision detection between box and circle
 		virtual bool collideRotatedBoxCircle(Entity& other, Vec2<real32>& collisionVector);
+		// Pixel Perfect collision detection.
+		// If the graphics card does not support a stencil buffer then CIRCLE  collision is used.
+		virtual bool collidePixelPerfect(Entity& ent, Vec2<real32>& collisionVector);
 		// collision detection helper functions
 		void ComputeRotatedBox(real32 angle);
 		bool projectionOverlap(Entity& other);
-		bool collideCornerCircle(Vec2<real32> corner, Entity& other, Vec2<real32>& collisionVector);
-
+		bool collideCornerCircle(Vec2<real32> corner, Entity& other, Vec2<real32>& collisionVector);	
 	public:
 		Entity(COLLISION_TYPE type = COLLISION_TYPE::NONE);
 		virtual ~Entity(){}
@@ -97,6 +100,8 @@ namespace GameEngine {
 		virtual real32 getMass() const { return physObj.mass; }
 		// Return gravitational constant.
 		virtual real32 getGravity() const { return physObj.gravity; }
+		// Return number of pixels colliding
+		virtual ulong getPixelsColliding() const { return physObj.pixelsColliding; }
 		// Return health;
 		virtual real32 getHealth() const { return health; }
 		// Return collision type (NONE, CIRCLE, BOX, ROTATED_BOX)

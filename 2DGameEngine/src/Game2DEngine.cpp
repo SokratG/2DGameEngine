@@ -254,6 +254,25 @@ namespace GameEngine {
 		initialized = FALSE;
 	}
 
+	VOID Game2D::GameLoop(Game2D* pGame, MSG& msg)
+	{
+		UINT done = 0;
+		while (!done) {
+
+			// PeekMessage is a non-blocking test for Windows messages
+			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				if (msg.message == WM_QUIT)
+					done = COMPLETE;
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else
+				pGame->run();
+
+		}
+	}
+
 	VOID Game2D::handleLostGraphicDevice() noexcept
 	{
 		result = graphicDriver->getDeviceState();

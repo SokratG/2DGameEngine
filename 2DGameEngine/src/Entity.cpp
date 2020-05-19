@@ -61,6 +61,8 @@ namespace GameEngine {
 			return collideCircle(other, collisionVector);
 		if (collisionType == BOX && other.getCollisionType() == BOX)
 			return collideBox(other, collisionVector);
+		if (collisionType == COLLISION_TYPE::PIXEL_PERFECT || other.getCollisionType() == COLLISION_TYPE::PIXEL_PERFECT)
+			return collidePixelPerfect(other, collisionVector);
 		if (collisionType == ROTATED_BOX && other.getCollisionType() == ROTATED_BOX)
 			return collideRotatedBox(other, collisionVector);
 		else {
@@ -293,6 +295,27 @@ namespace GameEngine {
 		return true;
 	}
 
+
+
+	bool Entity::collidePixelPerfect(Entity& other, Vec2<real32>& collisionVector)
+	{
+		if (graphicDevice->getStencilSupport() == false)  // if stencil not supported
+			return (collideCircle(other, collisionVector));   // use CIRCLE collision
+
+		// get fresh texture because they may have been released
+		other.spriteData.texture = other.textureManager->getTexture();
+		spriteData.texture = textureManager->getTexture();
+
+		// if pixels are colliding
+		physObj.pixelsColliding = graphicDevice->pixelCollision(other.getSpriteData(), this->getSpriteData());
+		if (physObj.pixelsColliding > 0)
+		{
+			// set collision vector to center of entity
+			collisionVector = *other.getCenter() - *getCenter();
+			return true;
+		}
+		return false;
+	}
 
 	void Entity::bounce(Entity& other, Vec2<real32>& collisionVec) 
 	{
