@@ -21,4 +21,3 @@ Simple 2D game engine
 
 # ***Reference:***
 <p><b>Book:</b><br>"Programming 2D Games", Charles Kelly, 2012 </p>
-<p><b>Good course with samples a games:</b><br><a href="https://www.edx.org/course/cs50s-introduction-to-game-development">CS50's Introduction to Game Development</a></p>
