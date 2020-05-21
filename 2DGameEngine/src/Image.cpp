@@ -65,7 +65,7 @@ namespace GameEngine {
 		return TRUE;
 	}
 
-	VOID Image::setCurrentFrames(UINT currentframe) {
+	VOID Image::setCurrentFrame(UINT currentframe) {
 
 		if (currentframe <= endFrame) {
 			currentFrame = currentframe;

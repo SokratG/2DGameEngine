@@ -67,7 +67,7 @@ namespace GameEngine {
 
 		// initilize image class 
 		virtual BOOL initialize(DirectGraphic* pGDirect, UINT width, UINT height, UINT ncol, TextureManager* pTextureManager);
-		virtual VOID setCurrentFrames(UINT currentframe);
+		virtual VOID setCurrentFrame(UINT currentframe);
 		virtual VOID setRect(); // Set spriteData.objrect to draw currentFrame
 		virtual VOID draw(COLOR_ARGB color = GraphColor::WHITE); // draw image, using color filter - color
 		virtual VOID draw(SpriteData spritedata, COLOR_ARGB color = GraphColor::WHITE);  // draw image, using color filter and sprite datastructure

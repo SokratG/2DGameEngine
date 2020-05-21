@@ -109,6 +109,7 @@
     <ClCompile Include="src\GameMath.cpp" />
     <ClCompile Include="src\InputDialog.cpp" />
     <ClCompile Include="src\MessageDialog.cpp" />
+    <ClCompile Include="src\Network.cpp" />
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\utility.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="include\Input.h" />
     <ClInclude Include="include\InputDialog.h" />
     <ClInclude Include="include\MessageDialog.h" />
+    <ClInclude Include="include\Network.h" />
     <ClInclude Include="include\Sprite.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\TextureManager.h" />
