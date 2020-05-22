@@ -1,6 +1,7 @@
 #include "Network.h"
 
-
+#define MAX_CONN 1
+#define PTON_OK 1
 using namespace NetParam;
 
 Network::Network()
@@ -82,7 +83,8 @@ INT32 Network::createClient(string server, INT32 port, CONNECT_TYPE protocol)
 	string localIP;
 	ADDRINFOA host;
 	ADDRINFOA* pResult = nullptr;
-
+	CHAR addr[16];
+	ZeroMemory(addr, sizeof(addr));
 
 	localIP.reserve(IP_SIZE);
 
@@ -91,7 +93,7 @@ INT32 Network::createClient(string server, INT32 port, CONNECT_TYPE protocol)
 		return status;
 
 	// if server does not contain a dotted quad IP address nnn.nnn.nnn.nnn
-	if ((remoteAddr.sin_addr.s_addr = inet_addr(server.c_str())) == INADDR_NONE) {
+	if (inet_pton(AF_INET, server.c_str(), &remoteAddr.sin_addr.s_addr) == PTON_OK) {
 		ZeroMemory(&host, sizeof(host));
 		host.ai_family = AF_INET;
 		host.ai_socktype = SOCK_STREAM;
@@ -104,12 +106,14 @@ INT32 Network::createClient(string server, INT32 port, CONNECT_TYPE protocol)
 		}
 		// get IP address of server
 		remoteAddr.sin_addr = (reinterpret_cast<SOCKADDR_IN*>(pResult->ai_addr))->sin_addr;
-		server = inet_ntoa(remoteAddr.sin_addr);
+		inet_ntop(AF_INET, &remoteAddr.sin_addr, addr, sizeof(addr));
+		server = addr;
+
 	}
 
 	// set local IP address
 	getLocalIp(localIP);
-	localAddr.sin_addr.s_addr = inet_addr(localIP.c_str());
+	inet_pton(AF_INET, localIP.c_str(), &localAddr.sin_addr.s_addr);
 	mode = CLIENT;
 
 	return NET_OK;
@@ -164,6 +168,8 @@ INT32 Network::getLocalIp(string& localIP) const
 	ADDRINFOA host;
 	ADDRINFOA* pResult = nullptr;
 	INT32 status = 0;
+	CHAR addr[16];
+	ZeroMemory(addr, sizeof(addr));
 
 	gethostname(hostname, 64);
 	ZeroMemory(&host, sizeof(ADDRINFOA));
@@ -178,7 +184,8 @@ INT32 Network::getLocalIp(string& localIP) const
 	}
 
 	IN_ADDR in_addr = ((SOCKADDR_IN*)pResult->ai_addr)->sin_addr;
-	localIP = inet_ntoa(in_addr);
+	inet_ntop(AF_INET, &remoteAddr.sin_addr, addr, sizeof(addr));
+	localIP = addr;
 
 	return NET_OK;
 }
@@ -206,20 +213,187 @@ INT32 Network::closeSocket()
 //
 INT32 Network::ReadData(CHAR* data, INT32& size, LPSTR senderIP)
 {
+	INT32 status = 0;
+	INT32 readSize = size;
+	size = 0;
+	CHAR addr[16];
+	ZeroMemory(addr, sizeof(addr));
+	// no recieve unbound socket
+	if (bound == FALSE)
+		return NET_OK;
+
+	if (mode == SERVER && type == CONNECTED_TCP) {
+		ret = listen(sock, MAX_CONN);
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			return ((status << 16) + NET_ERROR);
+		}
+		SOCKET isock = accept(sock, nullptr, nullptr);
+		if (isock == INVALID_SOCKET) {
+			status = WSAGetLastError();
+			if(status != WSAEWOULDBLOCK)	// skip WSAEWOULDBLOCK error
+				return ((status << 16) + NET_ERROR);
+			return NET_OK;	// no connection
+		}
+		closesocket(sock);
+		sock = isock;
+		type = CONNECTED_TCP;
+	}
+
+	if (mode == CLIENT && type == UNCONNECTED_TCP)
+		return NET_OK; // no connection
+
+	if (sock != NULL) {
+		remoteAddrSize = sizeof(remoteAddr);
+		ret = recvfrom(sock, data, readSize, 0, (SOCKADDR*)&remoteAddr, &remoteAddrSize);
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			if (status != WSAEWOULDBLOCK)
+				return ((status << 16) + NET_ERROR);
+			ret = 0; // clear SOCKET_ERROR
+		}
+		else if (ret == 0 && type == CONNECTED_TCP) // check TCP connection did close
+			return ((REMOTE_DISCONNECT << 16) + NET_ERROR); // return Remote Disconnect error
+		// copy data to buffer
+		if (ret) {
+			inet_ntop(AF_INET, &remoteAddr.sin_addr, addr, sizeof(addr));
+			strncpy_s(senderIP, IP_SIZE, addr, IP_SIZE);
+		}
+			
+		size = ret;
+	}
+	return NET_OK;
 
 }
 
 INT32 Network::ReadData(CHAR* data, INT32& size, LPSTR senderIP, USHORT& port)
 {
+	INT32 status = 0;
+	INT32 readSize = size;
+	size = 0;
+	CHAR addr[16];
+	ZeroMemory(addr, sizeof(addr));
+	// no recieve unbound socket
+	if (bound == FALSE)
+		return NET_OK;
+
+	if (mode == SERVER && type == CONNECTED_TCP) {
+		ret = listen(sock, MAX_CONN);
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			return ((status << 16) + NET_ERROR);
+		}
+		SOCKET isock = accept(sock, nullptr, nullptr);
+		if (isock == INVALID_SOCKET) {
+			status = WSAGetLastError();
+			if (status != WSAEWOULDBLOCK)	// skip WSAEWOULDBLOCK error
+				return ((status << 16) + NET_ERROR);
+			return NET_OK;	// no connection
+		}
+		closesocket(sock);
+		sock = isock;
+		type = CONNECTED_TCP;
+	}
+
+	if (mode == CLIENT && type == UNCONNECTED_TCP)
+		return NET_OK; // no connection
+
+
+	if (sock != NULL) {
+		remoteAddrSize = sizeof(remoteAddr);
+		ret = recvfrom(sock, data, readSize, 0, (SOCKADDR*)&remoteAddr, &remoteAddrSize);
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			if (status != WSAEWOULDBLOCK)
+				return ((status << 16) + NET_ERROR);
+			ret = 0; // clear SOCKET_ERROR
+		}
+		else if (ret == 0 && type == CONNECTED_TCP) // check TCP connection did close
+			return ((REMOTE_DISCONNECT << 16) + NET_ERROR); // return Remote Disconnect error
+		// copy data to buffer and setup port
+		if (ret) {
+			inet_ntop(AF_INET, &remoteAddr.sin_addr, addr, sizeof(addr));
+			strncpy_s(senderIP, IP_SIZE, addr, IP_SIZE);
+			port = remoteAddr.sin_port;
+		}
+		size = ret;
+	}
+	return NET_OK;
 
 }
 
-INT32 Network::SendData(const CHAR* data, INT32& size, const CHAR* remoteIP)
+INT32 Network::SendData(const CHAR* data, INT32& size, LPCSTR remoteIP)
 {
+	INT32 status = 0;
+	INT32 sendSize = size;
+	size = 0;
 
+	if (mode == SERVER)
+		inet_pton(AF_INET, remoteIP, &remoteAddr.sin_addr.s_addr);
+
+	if (mode == CLIENT && type == UNCONNECTED_TCP) {
+		ret = connect(sock, (SOCKADDR*)&remoteAddr, sizeof(remoteAddr));
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			if (status == WSAEISCONN) { // check if connected 
+				ret = 0;
+				type = CONNECTED_TCP;
+			}
+			else {
+				if (status == WSAEWOULDBLOCK || status == WSAEALREADY)
+					return NET_OK;	// no connection
+				else
+					return ((status << 16) + NET_ERROR);
+			}
+		}
+	}
+
+	ret = sendto(sock, data, sendSize, 0, (SOCKADDR*)&remoteAddr, sizeof(remoteAddr));
+	if (ret == SOCKET_ERROR) {
+		status = WSAGetLastError();
+		return ((status << 16) + NET_ERROR);
+	}
+	bound = TRUE;	// binding by sendto if unbound
+	size = ret;
+	return NET_OK;
 }
 
-INT32 Network::SendData(const CHAR* data, INT32& size, const CHAR* remoteIP, USHORT port)
+INT32 Network::SendData(const CHAR* data, INT32& size, LPCSTR remoteIP, const USHORT port)
 {
+	INT32 status = 0;
+	INT32 sendSize = size;
+	size = 0;
 
+	if (mode == SERVER)
+	{
+		inet_pton(AF_INET, remoteIP, &remoteAddr.sin_addr.s_addr);
+		remoteAddr.sin_port = port;
+	}
+
+
+	if (mode == CLIENT && type == UNCONNECTED_TCP) {
+		ret = connect(sock, (SOCKADDR*)&remoteAddr, sizeof(remoteAddr));
+		if (ret == SOCKET_ERROR) {
+			status = WSAGetLastError();
+			if (status == WSAEISCONN) { // check if connected 
+				ret = 0;
+				type = CONNECTED_TCP;
+			}
+			else {
+				if (status == WSAEWOULDBLOCK || status == WSAEALREADY)
+					return NET_OK;	// no connection
+				else
+					return ((status << 16) + NET_ERROR);
+			}
+		}
+	}
+
+	ret = sendto(sock, data, sendSize, 0, (SOCKADDR*)&remoteAddr, sizeof(remoteAddr));
+	if (ret == SOCKET_ERROR) {
+		status = WSAGetLastError();
+		return ((status << 16) + NET_ERROR);
+	}
+	bound = TRUE;
+	size = ret;
+	return NET_OK;
 }

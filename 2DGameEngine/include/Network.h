@@ -1,5 +1,6 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
+// #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
 #include <WinSock2.h>
 #include <ws2tcpip.h>
@@ -152,7 +153,7 @@ public:
     //
     INT32 ReadData(CHAR* data, INT32& size, LPSTR senderIP);
     INT32 ReadData(CHAR* data, INT32& size, LPSTR senderIP, USHORT& port);
-    INT32 SendData(const CHAR* data, INT32& size, const CHAR* remoteIP);
-    INT32 SendData(const CHAR* data, INT32& size, const CHAR* remoteIP, USHORT port);
+    INT32 SendData(const CHAR* data, INT32& size, LPCSTR remoteIP);
+    INT32 SendData(const CHAR* data, INT32& size, LPCSTR remoteIP, const USHORT port);
 };
 
