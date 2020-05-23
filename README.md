@@ -19,5 +19,6 @@ Simple 2D game engine
 * DirectX 9
 * MSVC 2019
 
-# ***Reference:***
-<p><b>Book:</b><br>"Programming 2D Games", Charles Kelly, 2012 </p>
+# ***Sample Spacewar:***
+<p><b>Game Space War</b></p><br>
+<img src="sample/gamesample.png">
