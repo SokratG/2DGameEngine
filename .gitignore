@@ -31,7 +31,9 @@
 *.out
 *.app
 
-SpaceWar/
+Pong/
+bin-int/
+bin/
 2DGameEngine/.vs/
 2DGameEngine/bin/
 2DGameEngine/bin-int/
