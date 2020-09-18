@@ -9,6 +9,7 @@
 #include "DirectText.h"
 // support classes
 #include "MessageDialog.h"
+#include "ThreadPool.h"
 #include "InputDialog.h"
 #include "console.h"
 

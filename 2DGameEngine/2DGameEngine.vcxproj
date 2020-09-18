@@ -133,6 +133,7 @@
     <ClInclude Include="include\Sprite.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\TextureManager.h" />
+    <ClInclude Include="include\ThreadPool.h" />
     <ClInclude Include="include\utility.h" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
