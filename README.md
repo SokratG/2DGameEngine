@@ -13,7 +13,7 @@ Simple 2D game engine
 * console for debug game
 * Network data exchange
 * Custom memory allocator
-* ThreadPool supported
+* ThreadPool supporting
 ## For programming game be inherited a Game2D class - implement pure virtual member function: update(), processAI(), colissions(), render().Initialize Game2D class and remainings class.
 
 # Building dependency:
