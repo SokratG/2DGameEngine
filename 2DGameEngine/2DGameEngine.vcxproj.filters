@@ -125,6 +125,9 @@
     <ClInclude Include="include\ThreadPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\CPU_Math.asm">
