@@ -10,6 +10,7 @@
 // support classes
 #include "MessageDialog.h"
 #include "ThreadPool.h"
+#include "Allocator.h"
 #include "InputDialog.h"
 #include "console.h"
 
