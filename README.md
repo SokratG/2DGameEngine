@@ -16,6 +16,8 @@ Simple 2D game engine
 * ThreadPool supporting
 ## For programming game be inherited a Game2D class - implement pure virtual member function: update(), processAI(), colissions(), render().Initialize Game2D class and remainings class.
 
+# Project build into static or dynamic lib and must be link to game project
+
 # Building dependency:
 * Windows OS(x86/x64)
 * DirectX 9
